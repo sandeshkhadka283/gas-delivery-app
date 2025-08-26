@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getDistance } from "geolib";
+import toast from "react-hot-toast"; // 👈 import at the top
+
 
 // You can move this to a separate file like vendorData.js
 const vendors = [
@@ -83,16 +85,38 @@ const RequestForm = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.contact || !formData.address || !formData.vendorId) {
-      alert("Please fill all fields and select a vendor.");
-      return;
-    }
 
-    alert(`✅ Request submitted:\n\n${JSON.stringify(formData, null, 2)}`);
-    navigate("/");
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  if (!formData.name || !formData.contact || !formData.address || !formData.vendorId) {
+    toast.error("Please fill all fields and select a vendor.");
+    return;
+  }
+
+  // 🔑 Generate a unique tracking ID (e.g., base36 of timestamp)
+  const trackingId = Math.random().toString(36).substring(2, 10).toUpperCase();
+
+  const newOrder = {
+    ...formData,
+    id: Date.now(),
+    trackingId,
   };
+
+  // 🗂️ Save to localStorage
+  const existing = JSON.parse(localStorage.getItem("orders")) || [];
+  localStorage.setItem("orders", JSON.stringify([...existing, newOrder]));
+
+  toast.success(`✅ Order submitted!\nTracking ID: ${trackingId}`);
+
+  // Optionally show it in an alert
+  setTimeout(() => {
+    alert(`🧾 Save your Tracking ID: ${trackingId}`);
+    navigate("/");
+  }, 1000);
+};
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-red-50 flex justify-center items-center p-6">
