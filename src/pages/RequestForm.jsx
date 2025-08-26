@@ -6,8 +6,8 @@ import { getDistance } from "geolib";
 const vendors = [
   {
     id: 1,
-    name: "Sita Gas Distributor",
-    brand: "Nepal Gas",
+    name: "Amber Gas Distributor",
+    brand: "Amber",
     location: { lat: 27.7172, lng: 85.3240 }, // Kathmandu
     isAvailable: true,
   },
